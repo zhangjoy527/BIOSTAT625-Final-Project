@@ -13,10 +13,12 @@ In "Model Building.Rmd," two models are fitted and compared through an LRT test,
 
 ## File Structure
 
-- **`Dataset Creation.R`**: R script for transforming raw diabetes data into the final dataset, "diabetes_data.csv."
 - **`diabetes_data_raw.csv`**: Original raw data.
+- **`Dataset Creation.R`**: R script for transforming raw diabetes data into the final dataset, "diabetes_data.csv."
+- **`diabetes_data.csv`**: Our finalized data.
 - **`Exploratory Data Analysis.Rmd`**: Explores and verifies variable categorization, generates Table 1, and features visualizations.
 - **`Model Building.Rmd`**: Builds and compares models, performs diagnostics, and evaluates model fitness.
+- **`Final Paper.Rmd`**: Code for writing our report.
 
 ## Resources
 CDC 2015 Data Codebook: https://www.cdc.gov/brfss/annual_data/2015/pdf/codebook15_llcp.pdf
