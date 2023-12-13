@@ -51,6 +51,8 @@ summary(model1)
 ```{r}
 model2 <- glm(data = diabetes_data, formula = Diabetes_binary ~ age_cat + HighBP + HighChol + CholCheck + Smoker + Stroke + HeartDiseaseorAttack + PhysActivity + Fruits + Veggies + HvyAlcoholConsump + AnyHealthcare + NoDocbcCost + DiffWalk + Sex + income_cat + edu_cat + PhysHlth_cat + MentHlth_cat, family = binomial("logit"))
 summary(model2)
+library(xtable)
+xtable(model2)
 ```
 
 # Compare models to see which is better
@@ -87,7 +89,7 @@ plot(x = fitted.values(model2), y = residuals(model2, type = "pearson"),
 ```
 
 # Fisher test
-```{r}
+```{r, include=FALSE}
 Fisher <- matrix(nrow = ncol(diabetes_data), ncol = ncol(diabetes_data))
 
 for (i in 1:ncol(diabetes_data)) {

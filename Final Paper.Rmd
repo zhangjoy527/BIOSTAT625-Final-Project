@@ -12,6 +12,8 @@ knitr::opts_chunk$set(echo = TRUE)
 library(dplyr)
 library(ggplot2)
 library(ggpubr)
+library(table1)
+library(knitr)
 
 diabetes_data <- read.csv("diabetes_data.csv")
 ```
@@ -109,12 +111,12 @@ annotate_figure(EDA_health, top = text_grob("Health Indicators Categorized by Ag
                color = "black", face = "bold", size = 16))
 ```
 
-This difference in age breakdown further interests us in our research question to see whether or not age is a significant predictor for diabetes. 
+This difference in age breakdown further interests us in our research question to see whether or not age is a significant predictor for diabetes. Additional descriptive statistics can be seen in Table 1.
 
 ## Model Inference
 Because our two models were nested, we were able to perform a likelihood ratio test to determine which one was a better fit. We found that our second model adjusting for all other covariates was superior to the one with just age as a predictor, and proceeded to interpret our results from the adjusted model summary.
 
-**** needs more
+Table 2 contains the results of our model analysis, including the estimates of the regression coefficients, their standard errors, and associated p-values. Looking at the values, we found that all age categories were significant in their relation to our Diabetes outcome. Specifically, compared to individuals under the age of 35, adults aged 35-49 are $e^{0.8376}=2.318$ times more likely ($p<0.05$) to have diabetes compared to individuals ages 35 and under. Adults aged 50-64 are $e^{1.2571}=3.515$ times more likely ($p<0.05$) to have diabetes compared to individuals ages 35 and under, and finally adults aged 65 and older are $e^{1.4118}=4.099$ times more likely ($p<0.05$) to have diabetes compared to individuals ages 35 and under. We use $e^{\beta_i}$ because our coefficients represent the log odds values. These results support previous research that age is related to diabetes, and further confirms that older individuals are more likely to be diabetic. 
 
 ## Model Diagnostics
 To assess the goodness of fit of our model, Pearson Chi-Squared test was performed. In addition, a residual vs. fitted values plot, deviance residuals, a leverage plot and the Cook’s distance were examined to detect the influential point and the normality of residuals. Finally, the variance inflation factor (VIF) was calculated to check if multicollinearity issue exists. Results from these examinations suggested that our model provided a good fit to the data, with no evidence of major departures from the assumptions of the binomial distribution.
@@ -124,7 +126,7 @@ A secondary goal of our project was to create an application for not just our us
 
 # Discussion
 
-************* needs more
+As previously mentioned, our results are consistent with previous research on the effect of age on diabetes. *** needs more
 
 # References
 
@@ -144,4 +146,65 @@ A secondary goal of our project was to create an application for not just our us
 
 [8] Alex Teboul. Diabetes Health Indicators Dataset. 2021. url: https://www.kaggle.com/datasets/alexteboul/diabetes-health-indicators-dataset/data.
 
+# Appendix
+
+Table 1: Descriptive Statistics by age in 2015 BRFSS survey
+```{r,echo=FALSE,warning=F,message=F}
+diabetes_data$Diabetes_binary <- factor(diabetes_data$Diabetes_binary)
+diabetes_data$HighBP <- factor(diabetes_data$HighBP)
+diabetes_data$HighChol <- factor(diabetes_data$HighChol)
+diabetes_data$CholCheck <- factor(diabetes_data$CholCheck)
+diabetes_data$Smoker <- factor(diabetes_data$Smoker)
+diabetes_data$Stroke <- factor(diabetes_data$Stroke)
+diabetes_data$HeartDiseaseorAttack <- factor(diabetes_data$HeartDiseaseorAttack)
+diabetes_data$PhysActivity <- factor(diabetes_data$PhysActivity)
+diabetes_data$Fruits <- factor(diabetes_data$Fruits)
+diabetes_data$Veggies <- factor(diabetes_data$Veggies)
+diabetes_data$HvyAlcoholConsump <- factor(diabetes_data$HvyAlcoholConsump)
+diabetes_data$AnyHealthcare <- factor(diabetes_data$AnyHealthcare)
+diabetes_data$NoDocbcCost <- factor(diabetes_data$NoDocbcCost)
+diabetes_data$DiffWalk <- factor(diabetes_data$DiffWalk)
+diabetes_data$Sex <- factor(diabetes_data$Sex)
+diabetes_data$age_cat <- factor(diabetes_data$age_cat)
+diabetes_data$income_cat <- factor(diabetes_data$income_cat)
+diabetes_data$edu_cat <- factor(diabetes_data$edu_cat)
+diabetes_data$PhysHlth_cat <- factor(diabetes_data$PhysHlth_cat)
+diabetes_data$MentHlth_cat <- factor(diabetes_data$MentHlth_cat)
+diabetes_data$age_cat_label <- ifelse(diabetes_data$age_cat == 0, "0: Under 35", ifelse(diabetes_data$age_cat == 1, "1: 35-49", ifelse(diabetes_data$age_cat == 2, "2: 50-64", "3: 65 or Over")))
+table1(~ Diabetes_binary + HighBP + HighChol + CholCheck + Smoker + Stroke + HeartDiseaseorAttack + PhysActivity + Fruits + Veggies + HvyAlcoholConsump + AnyHealthcare + NoDocbcCost + DiffWalk + Sex + income_cat + edu_cat + PhysHlth_cat + MentHlth_cat | age_cat_label, data = diabetes_data, overall = F)
+```
+
+Table 2: Model Coefficients
+\begin{table}[ht]
+\centering
+\begin{tabular}{rrrrrr}
+  \hline
+ & Estimate & Std. Error & z value & Pr($>$$|$z$|$) & \\ 
+  \hline
+(Intercept) & -3.3036 & 0.1012 & -32.63 & 0.0000 & *** \\ 
+  age\_cat1 & 0.8376 & 0.0539 & 15.53 & 0.0000 & *** \\ 
+  age\_cat2 & 1.2571 & 0.0513 & 24.49 & 0.0000 & *** \\ 
+  age\_cat3 & 1.4118 & 0.0518 & 27.23 & 0.0000 & *** \\ 
+  HighBP1 & 1.0209 & 0.0185 & 55.11 & 0.0000 & *** \\ 
+  HighChol1 & 0.6463 & 0.0180 & 35.85 & 0.0000 & *** \\ 
+  CholCheck1 & 1.4266 & 0.0780 & 18.30 & 0.0000 & *** \\ 
+  Smoker1 & -0.0064 & 0.0180 & -0.36 & 0.7210 & \\ 
+  Stroke1 & 0.1817 & 0.0398 & 4.57 & 0.0000 & *** \\ 
+  HeartDiseaseorAttack1 & 0.4186 & 0.0274 & 15.26 & 0.0000 & *** \\ 
+  PhysActivity1 & -0.2212 & 0.0202 & -10.93 & 0.0000 & *** \\ 
+  Fruits1 & -0.0941 & 0.0187 & -5.03 & 0.0000 & *** \\ 
+  Veggies1 & -0.0848 & 0.0224 & -3.78 & 0.0002 & *** \\ 
+  HvyAlcoholConsump1 & -0.8978 & 0.0470 & -19.11 & 0.0000 & *** \\ 
+  AnyHealthcare1 & 0.0410 & 0.0452 & 0.91 & 0.3644 & \\ 
+  NoDocbcCost1 & 0.0861 & 0.0329 & 2.62 & 0.0089 & **\\ 
+  DiffWalk1 & 0.5330 & 0.0240 & 22.20 & 0.0000 & *** \\ 
+  Sex1 & 0.2918 & 0.0183 & 15.95 & 0.0000 & *** \\ 
+  income\_cat1 & -0.2218 & 0.0246 & -9.03 & 0.0000 & *** \\ 
+  income\_cat2 & -0.5033 & 0.0244 & -20.66 & 0.0000 & *** \\ 
+  edu\_cat1 & -0.1218 & 0.0198 & -6.15 & 0.0000 & *** \\ 
+  PhysHlth\_cat1 & 0.2931 & 0.0227 & 12.91 & 0.0000 & *** \\ 
+  MentHlth\_cat1 & 0.0178 & 0.0244 & 0.73 & 0.4648 & \\ 
+   \hline
+\end{tabular}
+\end{table}
 
