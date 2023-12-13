@@ -48,7 +48,7 @@ The reference category for income was the low income group, and the reference ca
 # Results
 
 ## Descriptive Statistics
-Before examining our model results, we first created a couple of plots to look at the distribution of age among our covariates in our data set. We started by looking at our Diabetes response variable categorized by age, and saw that individuals with diabetes tend to be older than individuals without diabetes. 
+Before examining our model results, we first created a couple of plots to look at the distribution of age among our covariates in our data set. We started by looking at our diabetes response variable categorized by age, and saw that individuals with diabetes tend to be older than individuals without diabetes. 
 
 ```{r, echo=F, fig.dim = c(5, 3), fig.align='center'}
 ggplot(diabetes_data) + 
@@ -108,25 +108,37 @@ heart_disease_plot <- ggplot(diabetes_data) +
 EDA_health <- ggarrange(BP_plot, chol_plot, stroke_plot, heart_disease_plot, common.legend = T, legend = "bottom")
 
 annotate_figure(EDA_health, top = text_grob("Health Indicators Categorized by Age", 
-               color = "black", face = "bold", size = 16))
+               color = "black", size = 16))
 ```
 
-This difference in age breakdown further interests us in our research question to see whether or not age is a significant predictor for diabetes. Additional descriptive statistics can be seen in Table 1.
+This difference in age breakdown further interests us in our research question to see whether or not age is a significant predictor for diabetes. Other key factors that we noted were that less than 10% of our individuals had recorded a stroke in the past, the same being true for individuals with heavy alcohol consumption, not being able to see a doctor due to cost, and poor mental health. In addition, over 65% of total participants hold college degress and beyond and over half of the particpants consume fruits and vegetables at least once a day. Additional descriptive statistics can be seen in Table 1.
 
 ## Model Inference
 Because our two models were nested, we were able to perform a likelihood ratio test to determine which one was a better fit. We found that our second model adjusting for all other covariates was superior to the one with just age as a predictor, and proceeded to interpret our results from the adjusted model summary.
 
-Table 2 contains the results of our model analysis, including the estimates of the regression coefficients, their standard errors, and associated p-values. Looking at the values, we found that all age categories were significant in their relation to our Diabetes outcome. Specifically, compared to individuals under the age of 35, adults aged 35-49 are $e^{0.8376}=2.318$ times more likely ($p<0.05$) to have diabetes compared to individuals ages 35 and under. Adults aged 50-64 are $e^{1.2571}=3.515$ times more likely ($p<0.05$) to have diabetes compared to individuals ages 35 and under, and finally adults aged 65 and older are $e^{1.4118}=4.099$ times more likely ($p<0.05$) to have diabetes compared to individuals ages 35 and under. We use $e^{\beta_i}$ because our coefficients represent the log odds values. These results support previous research that age is related to diabetes, and further confirms that older individuals are more likely to be diabetic. 
+Table 2 contains the results of our model analysis, including the estimates of the regression coefficients, their standard errors, and associated p-values. Looking at the values, we found that all age categories were significant in their relation to our Diabetes outcome. Specifically, compared to individuals under the age of 35, adults aged 35-49 are $e^{0.8376}=2.318$ times more likely ($p<0.05$) to have diabetes compared to individuals ages 35 and under, adjusting for all covariates. Adults aged 50-64 are $e^{1.2571}=3.515$ times more likely ($p<0.05$) to have diabetes compared to individuals ages 35 and under, and finally adults aged 65 and older are $e^{1.4118}=4.099$ times more likely ($p<0.05$) to have diabetes compared to individuals ages 35 and under, again adjusting for all covariates. We use $e^{\beta_i}$ because our coefficients represent the log odds values. These results support previous research that age is related to diabetes, and further confirms that older individuals are more likely to be diabetic. 
 
 ## Model Diagnostics
-To assess the goodness of fit of our model, Pearson Chi-Squared test was performed. In addition, a residual vs. fitted values plot, deviance residuals, a leverage plot and the Cook’s distance were examined to detect the influential point and the normality of residuals. Finally, the variance inflation factor (VIF) was calculated to check if multicollinearity issue exists. Results from these examinations suggested that our model provided a good fit to the data, with no evidence of major departures from the assumptions of the binomial distribution.
+After completing variable selection, we conducted a pair-wise assessment of multicollinearity among the included covariates using Fisher’s exact tests. Given the reference coding of the model, this made VIF statistics applicable. The goodness of fit for the full model was evaluated using the Pearson chi-square test instead of the Hosmer-Lemeshow test, providing simplicity and avoiding additional parameter specifications.
+
+To address overdispersion concerns, we explored alternatives beyond the typical residuals vs. fitted values trend observation, such as (1) dividing the residual deviance by its degrees of freedom, and (2) estimating the scale parameter $a(\phi)$ using the Pearson chi-square statistic. Qualitative assessment of these values’ proximity to 1 was performed. Additionally, Cook’s distances and leverages were computed using the ‘glm.diag‘ function in R to identify high influence and leverage
+points. 
+
+The Pearson chi-square statistic, measuring the goodness of fit for the interaction model, yielded a large value, indicating a significant difference between observed and expected frequencies. With 35,327 degrees of freedom, this suggests a substantial number of observations in the contingency table. The p-value (0.491785) exceeds the significance level (0.05), indicating that our model was a good fit. Fisher’s exact test revealed significance among all relevant covariates ($p < 0.001$). While the plot of residuals vs. fitted values (Figure 3) did not show a random pattern, further investigation into overdispersion using the scale parameter estimate indicated a value close to 1 (1.10589), suggesting no overdispersion in our full model. Furthermore, influential and high-leverage points were detected (Figure 4 and Figure 5, respectively). Individual points were scrutinized, revealing no apparent issues in the data. However, additional insights from study conductors are essential to assess the potential impact on conclusions and whether any points should be removed.
+
+The non-random scatter observed in the Pearson residual vs. fitted values, attributed to the binary nature of the data, may warrant further investigation to ensure its alignment with the study’s objectives
 
 ## RShiny Application
 A secondary goal of our project was to create an application for not just our use, but for any researcher interested in the BRFSS data set. While we were specifically interested in diabetes as an outcome variable, the data set contains many other health indicators, such as high blood pressure, high cholesterol, heart disease, etc. In our RShiny application, users have the ability to select their specific covariate of interest, and build and analyze a model using the same methods we used. 
 
 # Discussion
 
-As previously mentioned, our results are consistent with previous research on the effect of age on diabetes. *** needs more
+As previously mentioned, our results are consistent with previous research on the effect of age on diabetes [1, 2, 7, 9, 11]. Aging has shown to affect glucose sensitivity and impair insulin secretion by the pancreatic cells, increasing the risk for diabetes. Additionally, our study showed that higher prevalence of diabetes or pre-diabetes were shown in males. However, limitations of our study were that all data was extracted from telephone surveys, which could potentially exhibit self-report bias. Our research may also fail to fully capture non-modifiable diabetes risk factors such as genetic factors, gestational diabetes, and family history. 
+
+# Contributions
+Yeseul:
+Joy:
+Jennie:
 
 # References
 
@@ -207,4 +219,37 @@ Table 2: Model Coefficients
    \hline
 \end{tabular}
 \end{table}
+
+Figure 3: Pearson residuals plotted against fitted values for overdispersion diagnostics
+
+```{r, echo=FALSE, fig.align='left'}
+model2 <- glm(data = diabetes_data, formula = Diabetes_binary ~ age_cat + HighBP + HighChol + CholCheck + Smoker + Stroke + HeartDiseaseorAttack + PhysActivity + Fruits + Veggies + HvyAlcoholConsump + AnyHealthcare + NoDocbcCost + DiffWalk + Sex + income_cat + edu_cat + PhysHlth_cat + MentHlth_cat, family = binomial("logit"))
+plot(x = fitted.values(model2), y = residuals(model2, type = "pearson"),
+     col = ifelse (diabetes_data[, "Diabetes_binary"] == 1, "darkblue", "chartreuse4"),
+     xlab = "Pearson's Residuals", ylab = "Fitted values")
+
+```
+
+Figure 4: Cook's distance plot
+
+```{r, echo=FALSE, fig.align='left'}
+influence_info <- influence.measures(model2)
+cooksd <- influence_info$infmat[, "cook.d"]
+leverage <- influence_info$infmat[, "hat"]
+std_resid <- influence_info$infmat[, ncol(influence_info$infmat)]
+
+plot(cooksd, pch = 20, main = "Cook's Distance Plot", ylab = "Cook's Distance")
+
+influential_points <- which(cooksd > 4/nrow(influence_info$infmat))
+points(influential_points, cooksd[influential_points], col = "red", pch = 20)
+```
+
+Figure 5: Leverage plot
+
+```{r, echo=FALSE, fig.align='left'}
+plot(leverage, pch = 20, main = "Leverage Plot", ylab = "Leverage")
+
+high_leverage_points <- which(leverage > 2 * mean(leverage))
+points(high_leverage_points, leverage[high_leverage_points], col = "red", pch = 20)
+```
 
