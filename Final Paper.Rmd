@@ -1,0 +1,83 @@
+---
+title: "625 Final Project Paper"
+author: "Yeseul Ha, Joy Zhang, Jingyu Zhao"
+date: "December 2023"
+output: 
+  pdf_document:
+    number_sections: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(readr)
+library(ggplot2)
+diabetes_data <- read_csv("diabetes_data.csv")
+```
+
+# Introduction
+Diabetes is a chronic disease that impacts 38 million adults in the United States, and it is a condition where the blood glucose levels are too high [3]. Diabetes is the eighth leading cause of death in the US and is categorized as either Type 1 or Type 2 diabetes. 90-95% of diabetes are Type 2, where the body is not capable of using insulin in the blood [2]. On the other hand, Type 1 diabetes consists of 5-10% of diabetes cases, and in this condition the body cannot produce its own insulin to use the blood glucose for energy [2]. Research has shown that high blood glucose is linked to other severe health problems, such as heart disease, nerve damage, and kidney disease [2]. The risk of diabetes has also been shown to drastically increase with age. According to the CDC, Type 2 diabetes develops most often in people over the age of 45 [3]. Some studies have even shown that after accounting for other health factors such as BMI, the ability for insulin to adjust blood glucose level continues to decreases with age, contributing to an increased risk of developing diabetes [6, 1]. In recent years, more young adults and adolescents are more developing Type II diabetes. In our research specifically, we would like to further examine the relationship between age and diabetes. 
+
+To look at age as a predictor of diabetes, we decided to construct two models: the first being an unadjusted model with just age as a predictor, and the second being an adjusted model, adjusting for almost all other covariates in our data set. 
+
+# Method
+To begin examining our research question, we used a balanced dataset that was compiled and cleaned from the 2015 Behavioral Risk Factor Surveillance System (BRFSS) [8]. The BRFSS is an annual health-related telephone survey conducted by the CDC that gathers information on participants' health-related risk behaviors, chronic health conditions, and their engagement with preventative services. Our data contains 70,692 observations, with several health and background variables. Our diabetes outcome was binary with a value of 1 for individuals who are either diabetic or pre-diabetic, and 0 otherwise. 
+
+## Data Cleaning
+Before proceeding with our model construction, we chose to re-categorize certain categorical covariates for ease of interpretation. Age was originally a categorical covariate with 13 levels, however we re-coded the variable into 4 categories: Under 35, 35-49, 50-64, and over 64. Income was re-categorized into low income (less than \$25,000 a year), medium income (\$25,000 to \$75,000 a year), and high income (over \$75,000 a year). Education was transformed into a binary indicator with a 1 representing having a college education and a 0 representing no college education. Finally, physical and mental health covariates were also transformed into binary indicators, with a 1 representing 5 or more days of poor health, and 0 representing under 5 days. We chose 5 as a cutoff because it was right around the mean of our dataset. 
+
+## Model Selection
+Due to consistent research on the limitations of BMI as an effective health and obesity indicator, we decided to exclude BMI variable from our model [4, 5, 7]. This decision was based on the fact that BMI does not directly measure the body fat, and many factors including muscle and bone mass can influence the index. We also chose to exclude our General Health covariate, since our data set already included Physical Health and Mental Health and the General Health would be redundant and highly correlated to the previous two. 
+A generalized linear model (glm) was chosen due to our binary response. ***** Needs more 
+
+# Results
+
+## Exploratory Data Analysis
+
+******* needs more
+Plot to show diabetes distribution by age - we see that individuals with diabetes are older than individuals without diabetes
+
+```{r, echo=F, fig.dim = c(5, 3), fig.align='center'}
+ggplot(diabetes_data) + 
+  geom_bar(aes(x = Diabetes_binary, fill = age_cat)) + 
+  ggtitle("Diabetes Categorized by Age") + 
+  labs(x = "Diabetes", fill = "Age Category")
+```
+
+We also look at the distribution of age: 
+
+```{r, echo = F, fig.dim = c(5, 3), fig.align='center'}
+ggplot(diabetes_data) + 
+  geom_bar(aes(x = age_cat)) + 
+  ggtitle("Distribution of Age") + 
+  labs(x = "Age")
+```
+
+## Model Diagnostics
+******* needs more
+
+## RShiny Application
+A secondary goal of our project was to create an application for not just our use, but for any researcher interested in the BRFSS data set. While we were specifically interested in diabetes as an outcome variable, the data set contains many other health indicators, such as high blood pressure, high cholesterol, heart disease, etc. In our RShiny application, users have the ability to select their specific covariate of interest, and build and analyze a model using the same methods we used. 
+
+# Discussion
+
+************* needs more
+
+# References
+
+[1] Boon How Chew et al. “Age 60years was an independent risk factor for diabetes-related complications despite good control of cardiovascular risk factors in patients with type 2 diabetes mellitus”. In: Experimental Gerontology 48.5 (May 2013), pp. 485–491. issn: 0531-5565. doi: 10.1016/j.exger.2013.02.017. url: http://dx.doi.org/10.1016/j.exger.2013.02.017.
+
+[2] National Institute of Diabetes, Digestive, and Kidney Diseases. Diabetes Statistics. Feb. 2023. url: https://www.niddk.nih.gov/health-information/health-statistics/diabetes-statistics.
+
+[3] Centers for Disease Control and Prevention. What is Diabetes. Sept. 5, 2023. url: https://www.cdc.gov/diabetes/basics/diabetes.html.
+
+[4] Dong Hoon Lee et al. “Comparison of the association of predicted fat mass, body mass index, and other obesity indicators with type 2 diabetes risk: two large prospective studies in US men and women”. In: European Journal of Epidemiology 33.11 (Aug. 2018), pp. 1113–1123. issn: 1573-7284. doi: 10.1007/s10654-018-0433-5. url: http://dx.doi.org/10.1007/s10654-018-0433-5.
+
+[5] Shriraam Mahadevan and Iftikhar Ali. “Is body mass index a good indicator of obesity?” In: International Journal of Diabetes in Developing Countries 36.2 (June 2016), pp. 140–142. issn: 1998-3832. doi: 10.1007/s13410-016-0506-5. url: http://dx.doi.org/10.1007/s13410-016-0506-5.
+
+[6] K. Mordarska and M. Godziejewska-Zawada. “Diabetes in the elderly”. In: Prz Menopauzalny16.2 (June 2017), pp. 38–43.
+
+[7] K. M. Narayan et al. “Effect of BMI on lifetime risk for diabetes in the U.S”. In: Diabetes Care 30.6 (June 2007), pp. 1562–1566.
+
+[8] Alex Teboul. Diabetes Health Indicators Dataset. 2021. url: https://www.kaggle.com/datasets/alexteboul/diabetes-health-indicators-dataset/data.
+
+
