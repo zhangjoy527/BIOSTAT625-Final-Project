@@ -50,7 +50,7 @@ logit(\pi_i) =
 + & \beta_{18} \cdot DiffWalk_1 + \beta_{19} \cdot Male + \beta_{20} \cdot Medium\_Income + \beta_{21} \cdot High\_Income + \beta_{22} \cdot Edu\_College
   \end{aligned}
 \end{equation}
-The reference category for income was the low income group, and the reference category for education was chosen to be the no collefe education group. 
+The reference category for income was the low income group, and the reference category for education was chosen to be the no college education group. 
 
 # Results
 
@@ -167,7 +167,7 @@ This difference in age breakdown further interests us in our research question t
 
 Because our two models were nested, we were able to perform a likelihood ratio test to determine which one was a better fit. We found that our second model adjusting for all other covariates was superior to the one with just age as a predictor, and proceeded to interpret our results from the adjusted model summary.
 
-Table 1 contains the results of our model analysis, including the estimates of the regression coefficients, their standard errors, and associated p-values. Looking at the values, we found that all age categories were significant in their relation to our Diabetes outcome. Specifically, compared to individuals under the age of 35, adults aged 35-49 are $e^{0.8376}=2.318$ times more likely ($p<0.05$) to have diabetes compared to individuals ages 35 and under, adjusting for all covariates. Adults aged 50-64 are $e^{1.2571}=3.515$ times more likely ($p<0.05$) to have diabetes compared to individuals ages 35 and under, and finally adults aged 65 and older are $e^{1.4118}=4.099$ times more likely ($p<0.05$) to have diabetes compared to individuals ages 35 and under, again adjusting for all covariates. We use $e^{\beta_i}$ because our coefficients represent the log odds values. These results support previous research that age is related to diabetes, and further confirms that older individuals are more likely to be diabetic. 
+Table 1 contains the results of our model analysis, including the estimates of the regression coefficients, their standard errors, and associated p-values. Looking at the values, we found that all age categories were significant in their relation to our Diabetes outcome. Specifically, compared to individuals under the age of 35, adults aged 35-49 are $e^{0.8376}=2.318$ times more likely ($p<0.05$) to have diabetes compared to individuals ages 35 and under, adjusting for all covariates. Adults aged 50-64 are $e^{1.2571}=3.515$ times more likely ($p<0.05$) to have diabetes compared to individuals ages 35 and under, and finally adults aged 65 and older are $e^{1.4118}=4.099$ times more likely ($p<0.05$) to have diabetes compared to individuals ages 35 and under, again adjusting for all covariates. We use $e^{\beta_i}$ because our coefficients represent the log odds values. These results support previous research that age is related to diabetes, and further confirms that older individuals are more likely to be diabetic.  
 
 ```{r pearson, include = F}
 model2 <- glm(data = diabetes_data, formula = Diabetes_binary ~ age_cat + HighBP + HighChol + CholCheck + Smoker + Stroke + HeartDiseaseorAttack + PhysActivity + Fruits + Veggies + HvyAlcoholConsump + AnyHealthcare + NoDocbcCost + DiffWalk + Sex + income_cat + edu_cat + PhysHlth_cat + MentHlth_cat, family = binomial("logit"))
