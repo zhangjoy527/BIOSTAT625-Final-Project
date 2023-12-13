@@ -228,12 +228,9 @@ A secondary goal of our project was to create an application for not just our us
 As previously mentioned, our results are consistent with previous research on the effect of age on diabetes [1, 2, 7, 9, 11]. Aging has shown to affect glucose sensitivity and impair insulin secretion by the pancreatic cells, increasing the risk for diabetes. Additionally, our study showed that higher prevalence of diabetes or pre-diabetes were shown in males. However, limitations of our study were that all data was extracted from telephone surveys, which could potentially exhibit self-report bias. Our research may also fail to fully capture non-modifiable diabetes risk factors such as genetic factors, gestational diabetes, and family history. 
 
 # Contributions
-Yeseul:
-Joy: Developed the RShiny app, organized the github, helped write the paper
-Jennie: 
+Yeseul conducted the literature review and helped write the background, model selection, and conclusion for our paper. Joy developed the RShiny app, organized the github, and helped write the descriptive statistics and made plots for the paper. Jingyu coded the data filtering, performed the covariate association visualization, and helped with model building and writing the model diagnostics portion of the paper. All three helped with editing the paper, and writing the README for the github. 
 
 # References
-
 
 [1] N. Bahour et al. “Diabetes mellitus correlates with increased biological age as indicated by clinical biomarkers”. In: Geroscience 44.1 (Feb. 2022), pp. 415–427.
 
