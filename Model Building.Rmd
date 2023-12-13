@@ -7,15 +7,22 @@ output: pdf_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
+library(ResourceSelection)
+library(car)
+library(corrplot)
+library(dplyr)
+library(Metrics)
+
 diabetes_data <- read.csv("diabetes_data.csv")
 ```
 
 # Factor covariates as necessary
 ```{r}
 diabetes_data$Diabetes_binary <- factor(diabetes_data$Diabetes_binary)
-#levels(diabetes_data$Diabetes_binary) <- c("No Diabetes", "Diabetes or Pre-Diabetic")
 diabetes_data$HighBP <- factor(diabetes_data$HighBP)
 diabetes_data$HighChol <- factor(diabetes_data$HighChol)
+diabetes_data$CholCheck <- factor(diabetes_data$CholCheck)
 diabetes_data$Smoker <- factor(diabetes_data$Smoker)
 diabetes_data$Stroke <- factor(diabetes_data$Stroke)
 diabetes_data$HeartDiseaseorAttack <- factor(diabetes_data$HeartDiseaseorAttack)
@@ -25,23 +32,116 @@ diabetes_data$Veggies <- factor(diabetes_data$Veggies)
 diabetes_data$HvyAlcoholConsump <- factor(diabetes_data$HvyAlcoholConsump)
 diabetes_data$AnyHealthcare <- factor(diabetes_data$AnyHealthcare)
 diabetes_data$NoDocbcCost <- factor(diabetes_data$NoDocbcCost)
-diabetes_data$GenHlth <- factor(diabetes_data$GenHlth)
 diabetes_data$DiffWalk <- factor(diabetes_data$DiffWalk)
 diabetes_data$Sex <- factor(diabetes_data$Sex)
+diabetes_data$age_cat <- factor(diabetes_data$age_cat)
+diabetes_data$income_cat <- factor(diabetes_data$income_cat)
+diabetes_data$edu_cat <- factor(diabetes_data$edu_cat)
+diabetes_data$PhysHlth_cat <- factor(diabetes_data$PhysHlth_cat)
+diabetes_data$MentHlth_cat <- factor(diabetes_data$MentHlth_cat)
 ```
 
 # Fit first model with just age
 ```{r}
-model1 <- glm(data = diabetes_data, formula = factor(Diabetes_binary) ~ factor(age_cat), family = binomial("logit"))
+model1 <- glm(data = diabetes_data, formula = Diabetes_binary ~ age_cat, family = binomial("logit"))
 summary(model1)
 ```
 
-# Fit model with all covariates
+# Fit model with all covariates of interest (No BMI, no GenHealth)
 ```{r}
-model2 <- glm(data = diabetes_data, formula = Diabetes_binary_numeric ~ HighBP + HighChol + CholCheck + Smoker + Stroke + HeartDiseaseorAttack + PhysActivity + Fruits + Veggies + HvyAlcoholConsump, family = binomial("logit"))
+model2 <- glm(data = diabetes_data, formula = Diabetes_binary ~ age_cat + HighBP + HighChol + CholCheck + Smoker + Stroke + HeartDiseaseorAttack + PhysActivity + Fruits + Veggies + HvyAlcoholConsump + AnyHealthcare + NoDocbcCost + DiffWalk + Sex + income_cat + edu_cat + PhysHlth_cat + MentHlth_cat, family = binomial("logit"))
 summary(model2)
 ```
 
+# Compare models to see which is better
+```{r}
+anova(model1, model2, test = "LRT")
+```
+Significant p-value from LRT says model 2 (adjusted model) is better - we proceed with model 2 to run diagnostic tests. 
 
+# Check for multicollinearity using VIF
+```{r}
+model2_vif <- vif(model2)
+vif_res <- t(data.frame(VIF = model2_vif))
+kable(vif_res, digits=2)
+```
+Most values are near 1, suggesting low multicollinearity
 
+# Goodness of Fit using Pearson's Chi-square test
+```{r}
+# Pearson Chi-square Goodness of Fit Test
+PChiAgeLog <- sum(residuals(model2, type = "pearson") ^ 2)
+df <- nrow(diabetes_data) - 20
+p_value <- pchisq(PChiAgeLog, df, lower.tail = FALSE)
+
+cat("Chi-square statistic:", PChiAgeLog, "\n")
+cat("degrees of freedom:", df, "\n")
+cat("p-value:", p_value, "\n")
+```
+P-value is insignificant, suggests model is a good fit
+
+# Plotting fitted vs. Resid
+```{r}
+plot(x = fitted.values(model2), y = residuals(model2, type = "pearson"),
+     col = ifelse (diabetes_data[, "Diabetes_binary"] == 1, "darkblue", "chartreuse4"))
+```
+
+# Fisher test
+```{r}
+Fisher <- matrix(nrow = ncol(diabetes_data), ncol = ncol(diabetes_data))
+
+for (i in 1:ncol(diabetes_data)) {
+  for (j in 1:ncol(diabetes_data)) {
+    # only perform test for unique pairs
+    if (i < j) {
+      # perform Fisher's exact test
+      result <- fisher.test(as.data.frame(diabetes_data)[,i], as.data.frame(diabetes_data)[,j],
+                            simulate.p.value = TRUE)
+      # store p-value in matrix
+      Fisher[i, j] <- result$p.value
+    }
+  }
+}
+
+colnames(Fisher) <- colnames(diabetes_data)
+
+Fisher 
+
+significant_pairs <- which(Fisher < 0.001, arr.ind = TRUE)
+
+# Print the variable pairs with significant correlation
+for (row in 1:nrow(significant_pairs)) {
+  i <- significant_pairs[row, 1]
+  j <- significant_pairs[row, 2]
+  cat("Significant correlation:", colnames(Fisher)[i], "*", colnames(Fisher)[j], "\n")
+}
+```
+
+# Deviance
+```{r}
+residual_deviance <- model2$deviance
+df <- model2$df.residual
+
+ratio_deviance_df <- residual_deviance / df
+
+print(ratio_deviance_df)
+```
+
+# Cook's Distance
+```{r}
+influence_info <- influence.measures(model2)
+cooksd <- influence_info$infmat[, "cook.d"]
+leverage <- influence_info$infmat[, "hat"]
+std_resid <- influence_info$infmat[, ncol(influence_info$infmat)]
+
+plot(cooksd, pch = 20, main = "Cook's Distance Plot", ylab = "Cook's Distance")
+
+influential_points <- which(cooksd > 4/nrow(influence_info$infmat))
+points(influential_points, cooksd[influential_points], col = "red", pch = 20)
+
+plot(leverage, pch = 20, main = "Leverage Plot", ylab = "Leverage")
+
+high_leverage_points <- which(leverage > 2 * mean(leverage))
+points(high_leverage_points, leverage[high_leverage_points], col = "red", pch = 20)
+```
 

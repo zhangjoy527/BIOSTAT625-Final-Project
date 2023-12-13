@@ -42,7 +42,7 @@ diabetes_data$MentHlth_cat <- factor(diabetes_data$MentHlth_cat)
 
 # Table One
 ```{r}
-table1(~ Diabetes_binary + HighBP + HighChol + CholCheck + Smoker + Stroke + HeartDiseaseorAttack | age_cat, data = diabetes_data)
+table1(~ Diabetes_binary + HighBP + HighChol + CholCheck + Smoker + Stroke + HeartDiseaseorAttack + PhysActivity + Fruits + Veggies + HvyAlcoholConsump + AnyHealthcare + NoDocbcCost + DiffWalk + Sex + income_cat + edu_cat + PhysHlth_cat + MentHlth_cat | age_cat, data = diabetes_data)
 ```
 
 
