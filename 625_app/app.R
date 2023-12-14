@@ -2,11 +2,13 @@
 # This is a Shiny web application for our 625 group project
 #
 
-library(shiny)
+#library(shiny)
 library(shinydashboard)
 library(gtsummary)
 library(gt)
 library(corrplot)
+library(rsconnect)
+library(ggplot2)
 pacman::p_load(knitr, ResourceSelection, car)
 library(boot)
 
