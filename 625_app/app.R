@@ -328,7 +328,10 @@ server <- function(input, output) {
 
   # Leverage
   output$leverage <- renderPlot({
-    influence_info <- influence.measures(model2)
+    model_form <- as.formula(paste(input$outcome, " ~ ", paste(input$covariates, collapse = " + ")))
+    model1 <- glm(data = diabetes_data, formula = model_form, family = binomial("logit"))
+
+    influence_info <- influence.measures(model1)
     cooksd <- influence_info$infmat[, "cook.d"]
     leverage <- influence_info$infmat[, "hat"]
     std_resid <- influence_info$infmat[, ncol(influence_info$infmat)]
